@@ -1,0 +1,70 @@
+Problem statement :-
+          Here we have given a linked list in which we have to delete all the nodes that have the adjacent (right) greater values to that node .
+
+example :- 
+        input :- 8-> 7-> 8-> 4-> 5-> 6-> 2-> 1-> -1
+        output :- 8-> 8-> 6-> 2-> 1-> -1
+        
+ Explaination :-        
+        -first we have 8 in our ans (8->-1)
+        -then we get 7 but right node of 7 have value 8 which is greater than that of 7 so we will delete 7 so,now our ans becomes(8->8->-1)
+        -now we get 4 whose right node's data is greater than that node(4 < 5) so we will not add 4 in our ans
+        -now we get 5 whose right node's data is greater than that node(5 < 6) so we will not add 5 in our ans
+        -now we get 6 whose right node's data is less than that node(6 > 2) so, now our ans becomes(8->8->6->-1)
+        -now we get 2 whose right node's data is less than that node(2 > 1) so, now our ans becomes(8->8->6->2->-1)
+        -now we get 1 whose right is NULL so, now our ans becomes(8->8->6->2->1->-1)
+        
+Approach :- As we have to delete the node whose adjacent right node's data is greater than that node . (see explanation) . So instead of  starting the process from 
+         starting we will reverse our list and then delete the node if its data is less than that node's data. then we will reverse the list as we will now have the 
+         ans list in reverse order so we will reverse this list and then return the ans list.
+         
+         i.e. 
+              given list :- 8-> 7-> 8-> 4-> 5-> 6-> 2-> 1-> -1
+              reversing the list :- 1-> 2-> 6-> 5-> 4-> 8-> 7-> 8-> -1
+              removing node having less value :- 1-> 2-> 6-> 8-> 8-> -1
+              now revere the list :- 8-> 8-> 6-> 2-> 1-> -1
+         
+         
+Time complexity :- O(n)
+Space complexity :- O(1)
+      
+
+code :- 
+
+// method to reverse the list
+LinkedListNode<int>* getrev(LinkedListNode<int>* head){
+    LinkedListNode<int>* prev = NULL;
+    LinkedListNode<int>* curr = head;
+    LinkedListNode<int>* forward = head;
+    while(curr != NULL){
+        forward = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = forward;
+    }
+    return prev;
+}
+
+LinkedListNode<int> * deleteNodes(LinkedListNode<int> * head) {
+    if(head == NULL || head -> next == NULL) return head;
+    head = getrev(head);          // reversing the list
+    LinkedListNode<int>* temp = new LinkedListNode<int>(-1);  // dummy node
+    LinkedListNode<int>* ans = temp;
+    while(head != NULL){
+        if(temp->data <= head->data){         // take the node
+            temp->next = head;
+            temp = temp->next;
+            head = head->next;
+        }
+        else{                               // delete the node
+            LinkedListNode<int>* t = head;
+            head = head->next;
+            t->next = NULL;
+            delete (t);
+        }
+    }
+    temp->next = NULL;
+    return getrev(ans->next);   // return the list after reversing it
+}
+            
+
